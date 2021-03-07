@@ -12,5 +12,8 @@ HilbertGeoHash.encode(double latitude, double longitude,int precision,4) // retu
 
 ## What's next?
 
-* Add support for base 4 and base 64 encoded representations.
-* Neighbouring 
+<pre>
+✅ Release on pub.dev <br> 
+☑️ Add support for base 4 and base 64 encoded representations. <br> 
+☑️ Neighbouring 
+</pre>
