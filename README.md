@@ -1,14 +1,10 @@
 # hilbert_geohash
 
-A new Flutter package project.
+Geohash a lng/lat coordinate using hilbert space filling curves written in dart.
 
-## Getting Started
+## Example
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```
+HilbertGeoHash.encode(double latitude, double longitude,int precision,4) // returns base16(4 bit) geohash representation. 
+```
