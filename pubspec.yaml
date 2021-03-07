@@ -1,8 +1,7 @@
 name: hilbert_geohash
 description: Geohash a lng/lat coordinate using hilbert space filling curves.
 version: 0.0.1
-author: Amer Hrnjic & Omer Bayram
-homepage:
+repository: https://github.com/omchiii/hilbert_geohash_dart
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
