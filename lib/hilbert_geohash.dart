@@ -7,7 +7,7 @@ import 'package:tuple/tuple.dart';
 class HilbertGeoHash {
   final Tuple2 latInterval = const Tuple2<double, double>(-90.0, 90.0);
   final Tuple2 lngInterval = const Tuple2<double, double>(-180.0, 180.0);
-  String encode(double lng, double lat, {int precision = 10, int bitsPerChar = 4}) {
+  String encode(double lng, double lat, {int precision = 15, int bitsPerChar = 4}) {
     if (lng > lngInterval.item1 &&
         lng < lngInterval.item2 &&
         lat > latInterval.item1 &&
@@ -172,6 +172,53 @@ class HilbertGeoHash {
     }
 
     return neighbursDict;
+  }
+
+  /*
+  Expects an object with the following attributes for screenVerticesObject:
+      'upLeftLat': double,
+      'upLeftLon': double,
+      'upRightLat': double,
+      'upRightLon': double,
+      'downLeftLat': double,
+      'downLeftLon': double,
+      'downRightLat': double,
+      'downRightLon': double,
+
+      level is meant to be in terms of the level of a given geohash cluster.
+  */
+  List<String> propagateRectangle(Map<String,double> screenVerticesObject, int level, {int precision = 15, int bitsPerChar = 4}) {
+    List<String> hashList = [];
+    var upLeftHash = encode(screenVerticesObject['upLeftLon'], screenVerticesObject['upLeftLat'], precision: level, bitsPerChar: bitsPerChar);
+    var upRightHash = encode(screenVerticesObject['upRightLon'], screenVerticesObject['upRightLat'], precision: level, bitsPerChar: bitsPerChar);
+    var downLeftHash = encode(screenVerticesObject['downLeftLon'], screenVerticesObject['downLeftLat'], precision: level, bitsPerChar: bitsPerChar);
+    var downRightHash = encode(screenVerticesObject['downRightLon'], screenVerticesObject['downRightLat'], precision: level, bitsPerChar: bitsPerChar);
+
+    var movingHash = upLeftHash;
+    var rightLimitHash = upRightHash;
+    var endHash = downRightHash;
+
+    // This means the entire screen is in one hash
+    if (movingHash == endHash) {
+      return hashList;
+    }
+
+    var rowHash = movingHash;
+    while(movingHash != endHash) { 
+      if (movingHash == rightLimitHash) {
+        hashList.add(movingHash);
+        rowHash = neighbours(rowHash, bitsPerChar)['south'];
+        rightLimitHash = neighbours(movingHash,bitsPerChar)['south'];
+        movingHash = rowHash;
+      }
+      while(movingHash != rightLimitHash) {
+        var rightNeighbour = neighbours(movingHash,bitsPerChar);
+        hashList.add(movingHash);
+        movingHash = rightNeighbour['east'];
+      }
+    } 
+    hashList.add(movingHash);
+   return hashList;
   }
 
   Tuple4 decodeExactly(code, {bitsPerChar = 4}) {
